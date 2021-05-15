@@ -20,4 +20,20 @@ class ApplicationController < ActionController::Base
     @num_square_root = Math.sqrt(num_to_f)
     render({:template => "calculation_templates/square_root_results.html.erb"})
   end
+
+  def blank_payment_form
+    render({:template =>"calculation_templates/payment_form.html.erb"})
+  end
+
+  def calculate_payment 
+    @apr = params.fetch("user_apr")
+    monthly_apr = @apr.to_f/(100*12)
+    @years = params.fetch("user_years")
+    years_to_months = @years.to_f*12
+    @principal = params.fetch("user_pv")
+    principal_float = @principal.to_f
+    @payment = (monthly_apr*principal_float)/(1-((1+monthly_apr)**(-years_to_months)))
+    
+    render({:template => "calculation_templates/payment_results.html.erb"})
+  end
 end
